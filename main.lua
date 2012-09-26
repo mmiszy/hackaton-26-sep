@@ -4,7 +4,7 @@ require"logic"
 --test
 math.randomseed(7)
 local tiles = {}
-local size = { x = 5, y = 4 }
+local size = { x = 5, y = 6 }
 
 bug = beetle:new({
 	getData = function (x,y) return tiles[x][y].routes end,
@@ -114,7 +114,7 @@ end
 
 local function initGame (settings)
 
-	local tileWidth = display.contentWidth/size.x
+	local tileWidth = math.min(display.contentWidth/size.x, display.contentHeight/size.y)
 	local tileHeight = tileWidth
 
 	for x=1, size.x do
