@@ -20,9 +20,11 @@ beetle = {
 	moveInterp = .0, -- how far from center of the block are we?
 	passedBorder = false,
 	speed = 0.05,
+	board = nil,
 }
-function beetle:new() 
+function beetle:new(board) 
 	o = o or { }
+	o.board = board
 	setmetatable(o, self)
 	self.__index = self
 	return o
@@ -113,9 +115,9 @@ function beetle:run ()
 		local directionMod = DIRECTION_MODS[self.direction]
 		self.position.x = self.position.x + directionMod.x
 		self.position.y = self.position.y + directionMod.y
-		local nextTile = B.data[self.position.x][self.position.y]
+		local nextTile = self.board.data[self.position.x][self.position.y]
 		
-		if goingOutOfBounds(self.position, self.direction, B.size) then
+		if goingOutOfBounds(self.position, self.direction, self.board.size) then
 			return nil, "game_over - out of bounds"
 		end
 		
@@ -135,7 +137,7 @@ function beetle:run ()
 		print ("Beetle advanced to tile ["..self.position.x..","..self.position.y.."]")
 		
 		-- check ambiguity
-		direction = updateDirectionAtWall(direction, B.data[self.position.x][self.position.y])
+		direction = updateDirectionAtWall(direction, self.board.data[self.position.x][self.position.y])
 	end
 	
 	print ("Beetle interp = "..self.moveInterp)
@@ -210,7 +212,7 @@ B = board:new()
 B:randomize()
 B:dump()
 
-bug = beetle:new()
+bug = beetle:new(B)
 
 for i = 0, 20 * 10 do
 	result, reason = bug:run()
