@@ -47,7 +47,7 @@ local function initGame (settings)
 	for y=1, settings.tilesY, 1 do
 		for x=1, settings.tilesX, 1 do
 			if (tiles[x] == nil) then tiles[x] = {} end
-			tiles[x][y] = drawTile({t = true, b = true, l = true, r = true}, (x-1)*tileWidth, (y-1)*tileHeight+25, tileWidth, tileHeight);
+			tiles[x][y] = drawTile({t = common.randTrueFalse(), b = common.randTrueFalse(), l = common.randTrueFalse(), r = common.randTrueFalse()}, (x-1)*tileWidth, (y-1)*tileHeight+25, tileWidth, tileHeight);
 			tiles[x][y]:addEventListener("touch", function (event)
 				if (event.phase == "began") then
 					print(event.target)
