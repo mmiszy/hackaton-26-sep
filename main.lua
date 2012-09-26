@@ -10,25 +10,45 @@ tileSize.height = tileSize.width
 
 -- wrapper for beetle including display
 displayBeetle = {
-	logic = beetle:new({
-		getData = function (x,y) return tiles[x][y].routes end,
-		getSize = function () return size end
-	}),
-	
-	draw = function()
-		-- non-class object
-		local self = displayBeetle
-		
-		local x = self.logic.position.x + DIRECTION_MODS[self.logic.direction].x * self.logic.moveInterp
-		local y = self.logic.position.y + DIRECTION_MODS[self.logic.direction].y * self.logic.moveInterp
-		
-		-- size is temporary!
-		local bg = display.newRect(x, y, 30, 30)
-		bg.strokeWidth = 0
-		bg:setReferencePoint(display.CenterReferencePoint)
-		bg:setFillColor(0,0,255)
-	end
 }
+
+function displayBeetle:new(o)
+	o = o or { }
+	setmetatable(o, self)
+	self.__index = self
+	o.logic = beetle:new{
+		board = {
+			getData = function (position)
+				for k,v in pairs(position) do print(k,v) end
+				print ("xy "..position.x.." "..position.y)
+				return tiles[position.x][position.y].routes
+			end,
+			getSize = function () return size end
+		}
+	}
+	o.bg = display.newRect((o.logic.position.x+0.5)*tileSize.width, (o.logic.position.y+0.5)*tileSize.height, tileSize.width*0.75, tileSize.height*0.75)
+	o.bg.strokeWidth = 0
+	o.bg:setReferencePoint(display.CenterReferencePoint)
+	o.bg:setFillColor(0,0,255)
+	return o 
+end
+
+function displayBeetle:run() 
+	print("beetle run!")
+	self.logic:run() 
+end
+
+function displayBeetle:draw ()
+	local x = self.logic.position.x + DIRECTION_MODS[self.logic.direction].x * self.logic.moveInterp * tileSize.width
+	local y = self.logic.position.y + DIRECTION_MODS[self.logic.direction].y * self.logic.moveInterp * tileSize.height
+	
+	self.bg.x = x
+	self.bg.y = y
+	-- size is temporary!
+end
+
+ladyBug = displayBeetle:new()
+-----------------
 
 tile = {
 	left = 0,
@@ -106,18 +126,14 @@ end
 
 local prevTime = system.getTimer()
 local function enterFrame (event)
-	local curTime = event.time
-	local dt = curTime - prevTime
-	prevTime = curTime
+	local curTime = event.time	
 	
-	-- limit how often fps updates
-	-- fps.text = string.format( '%.2f', 1000 / dt )
-	
-	if ( (curTime - prevTime ) > (1./60.) ) then	
-		bug:run()
+	if ( (curTime - prevTime ) > (16) ) then	
+		ladyBug:run()
+		prevTime = curTime
 	end
 	
-	displayBeetle.draw()
+	ladyBug:draw()
 end
 
 function tile:touch (e)

@@ -15,16 +15,16 @@
 require"common"
 
 beetle = {
-	position = { x = 1, y = 1 },
+	position = { x = 2, y = 2 },
 	direction = "down", -- "left", "right", "up"
 	moveInterp = .0, -- how far from center of the block are we?
 	passedBorder = false,
 	speed = 0.05,
 	board = nil,
 }
-function beetle:new(board) 
+
+function beetle:new(o) 
 	o = o or { }
-	o.board = board
 	setmetatable(o, self)
 	self.__index = self
 	return o
@@ -118,9 +118,11 @@ function beetle:run ()
 		local directionMod = DIRECTION_MODS[self.direction]
 		self.position.x = self.position.x + directionMod.x
 		self.position.y = self.position.y + directionMod.y
-		local nextTile = self.board:getData(self.position.x, self.position.y)
 		
-		if goingOutOfBounds(self.position, self.direction, self.board:getSize()) then
+		print ("xy "..self.position.x.." "..self.position.y)
+		local nextTile = self.board.getData(self.position)
+		
+		if goingOutOfBounds(self.position, self.direction, self.board.getSize()) then
 			return nil, "game_over - out of bounds"
 		end
 		
@@ -140,7 +142,7 @@ function beetle:run ()
 		print ("Beetle advanced to routes ["..self.position.x..","..self.position.y.."]")
 		
 		-- check ambiguity
-		direction = updateDirectionAtWall(direction, self.board:getData(self.position.x, self.position.y))
+		direction = updateDirectionAtWall(direction, self.board.getData(self.position))
 	end
 	
 	print ("Beetle interp = "..self.moveInterp)
