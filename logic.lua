@@ -30,11 +30,6 @@ function beetle:new(board)
 	return o
 end
 
-board = {
-	data = { },
-	size = { x = 5, y = 5 },
-}
-
 DIRECTION_MODS = {
 	up = { x = 0, y = -1 },
 	down = { x = 0, y = 1 },
@@ -42,15 +37,15 @@ DIRECTION_MODS = {
 	right = { x = 1, y = 0}
 }		
 
--- tile definition
-tile = {
+-- routes definition
+routes = {
 	t = true, --top
 	b = true, --bottom
 	l = true, --left
 	r = true, --right
 }
 
-function tile:new (t, b, l, r)
+function routes:new (t, b, l, r)
 	o = { 
 		t = t,
 		b = b,
@@ -60,6 +55,14 @@ function tile:new (t, b, l, r)
 	setmetatable(o, self)
 	self.__index = self
 	return o
+end
+
+function routes:tap()
+	local off = self.t
+	self.t = self.r
+	self.r = self.b
+	self.b = self.l
+	self.l = off
 end
 
 -- implementation
@@ -76,30 +79,30 @@ function beetle:run ()
 		return false
 	end	
 	
-	function canRunIntoTile(direction, tile) 
-		if direction == "up" then return tile.b
-		elseif direction == "down" then return tile.t
-		elseif direction == "left" then return tile.r
-		elseif direction == "right" then return tile.l
+	function canRunIntoTile(direction, routes) 
+		if direction == "up" then return routes.b
+		elseif direction == "down" then return routes.t
+		elseif direction == "left" then return routes.r
+		elseif direction == "right" then return routes.l
 		end
 	end
 	
-	function updateDirectionAtWall(direction, tile)
-		if (direction == "up" and not tile.t) or
-				(direction == "down" and not tile.b) then
-			if tile.l and tile.r then -- randomize
+	function updateDirectionAtWall(direction, routes)
+		if (direction == "up" and not routes.t) or
+				(direction == "down" and not routes.b) then
+			if routes.l and routes.r then -- randomize
 				return common.randTrueFalse() and "left" or "right"
-			elseif tile.l then
+			elseif routes.l then
 				return "left"
 			else
 				return "right"
 			end
 		end
-		if (direction == "left" and not tile.l) or
-				(direction == "right" and not tile.r) then
-			if tile.t and tile.b then -- randomize
+		if (direction == "left" and not routes.l) or
+				(direction == "right" and not routes.r) then
+			if routes.t and routes.b then -- randomize
 				return common.randTrueFalse() and "up" or "down"
-			elseif tile.t then
+			elseif routes.t then
 				return "up"
 			else
 				return "down"
@@ -115,16 +118,16 @@ function beetle:run ()
 		local directionMod = DIRECTION_MODS[self.direction]
 		self.position.x = self.position.x + directionMod.x
 		self.position.y = self.position.y + directionMod.y
-		local nextTile = self.board.data[self.position.x][self.position.y]
+		local nextTile = self.board:getData(self.position.x, self.position.y)
 		
-		if goingOutOfBounds(self.position, self.direction, self.board.size) then
+		if goingOutOfBounds(self.position, self.direction, self.board:getSize()) then
 			return nil, "game_over - out of bounds"
 		end
 		
-		print ("Checking next tile, direction = "..self.direction)
+		print ("Checking next routes, direction = "..self.direction)
 		
 		if not canRunIntoTile(self.direction, nextTile) then
-			return nil, "game_over - tile error"
+			return nil, "game_over - routes error"
 		end
 		
 		self.passedBorder = true
@@ -134,76 +137,14 @@ function beetle:run ()
 	if self.moveInterp >= 1.0 then
 		self.moveInterp = .0
 		self.passedBorder = false
-		print ("Beetle advanced to tile ["..self.position.x..","..self.position.y.."]")
+		print ("Beetle advanced to routes ["..self.position.x..","..self.position.y.."]")
 		
 		-- check ambiguity
-		direction = updateDirectionAtWall(direction, self.board.data[self.position.x][self.position.y])
+		direction = updateDirectionAtWall(direction, self.board:getData(self.position.x, self.position.y))
 	end
 	
 	print ("Beetle interp = "..self.moveInterp)
 	
 	return "ok"
 end
-
--- board
-function board:new(o)
-	o = o or { }
-	setmetatable(o, self)
-	self.__index = self
-	return o
-end
-
-function board:randomize(size)
-	self.size = size or { x = 5, y = 5 }
-	self.data = { }
-	for x = 1, self.size.x do
-		self.data[x] = { }
-		for y = 1, self.size.y do
-			local t = common.randTrueFalse()
-			local b = common.randTrueFalse()
-			local l = common.randTrueFalse()
-			local r = common.randTrueFalse()
-			self.data[x][y] = tile:new(t,b,l,r)
-		end
-	end
-end
-
-function board:dump()
-	for y = 1, self.size.y do
-		for x = 1, self.size.x do
-			local tile = self.data[x][y]
-			s = "["..(tile.t and "X" or ".")
-				..(tile.b and "X" or ".")
-				..(tile.l and "X" or ".")
-				..(tile.r and "X" or ".") .. "]"
-			io.write(s)
-		end
-		io.write("\n")
-	end
-end
-
-function board:tapTile(position)
-    -- t, r, b, l
-	local tile = self.data[position.x][position.y]
-	local off = tile.t
-	tile.t = tile.r
-	tile.r = tile.b
-	tile.b = tile.l
-	tile.l = off
-	self.data[position.x][position.y] = tile
-end
-
---[[
-local function enterFrame( event )
-	local curTime = event.time
-	local dt = curTime - prevTime
-	prevTime = curTime
-	if ( (curTime - fps.prevTime ) > 100 ) then
-		-- limit how often fps updates
-		fps.text = string.format( '%.2f', 1000 / dt )
-	end
-end
-]]
-
-return logic
 

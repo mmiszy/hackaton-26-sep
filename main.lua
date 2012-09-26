@@ -1,14 +1,15 @@
 local common = require"common"
-local logic = require"logic"
+require"logic"
 
 --test
 math.randomseed(7)
+local tiles = {}
+local size = { x = 5, y = 4 }
 
-B = board:new()
-B:randomize()
-B:dump()
-
-bug = beetle:new(B)
+bug = beetle:new({
+	getData = function (x,y) return tiles[x][y].routes end,
+	getSize = function () return size end
+})
 
 --[[for i = 0, 20 * 10 do
 	result, reason = bug:run()
@@ -19,26 +20,15 @@ bug = beetle:new(B)
 end]]
 
 tile = {
-	t = {
-		t = true, --top
-		b = true, --bottom
-		l = true, --left
-		r = true, --right
-	},
 	left = 0,
 	top = 0,
 	width = 0,
 	height = 0
 }
 
-function tile:new (t, left, top, width, height)
+function tile:new (routes, left, top, width, height)
 	o = {
-		t = {
-			t = t.t, --top
-			b = t.b, --bottom
-			l = t.l, --left
-			r = t.r, --right
-		},
+		routes = routes,
 		left = left,
 		top = top,
 		width = width,
@@ -68,22 +58,22 @@ function tile:draw ()
 
 		local routes = display.newGroup()
 
-		if (self.t.t) then
+		if (self.routes.t) then
 			local tile = display.newRect(self.left+miniTileWidth, self.top, miniTileWidth, miniTileHeight)
 			tile:setFillColor(0,255,0)
 			routes:insert(tile)
 		end
-		if (self.t.b) then
+		if (self.routes.b) then
 			local tile = display.newRect(self.left+miniTileWidth, self.top+self.height-miniTileHeight, miniTileWidth, miniTileHeight)
 			tile:setFillColor(0,255,0)
 			routes:insert(tile)
 		end
-		if (self.t.l) then
+		if (self.routes.l) then
 			local tile = display.newRect(self.left, self.top+miniTileHeight, miniTileWidth, miniTileHeight)
 			tile:setFillColor(0,255,0)
 			routes:insert(tile)
 		end
-		if (self.t.r) then
+		if (self.routes.r) then
 			local tile = display.newRect(self.left+self.width-miniTileWidth, self.top+miniTileHeight, miniTileWidth, miniTileHeight)
 			tile:setFillColor(0,255,0)
 			routes:insert(tile)
@@ -113,41 +103,37 @@ end
 
 function tile:touch (e)
 	if (e.phase == "began") then
-		self.t = {
-			t = common.randTrueFalse(), b = common.randTrueFalse(), l = common.randTrueFalse(), r = common.randTrueFalse()
-		}
+		self.routes:tap()
 		self:draw()
 	end
 end
 
 local function initGame (settings)
 
-	local tileWidth = display.contentWidth/settings.tilesX
+	local tileWidth = display.contentWidth/size.x
 	local tileHeight = tileWidth
 
-
-	for x=1, settings.tilesX do
-		B.data[x] = { }
-		for y=1, settings.tilesY do
+	for x=1, size.x do
+		tiles[x] = { }
+		for y=1, size.y do
 			
-			B.data[x][y] = tile:new(
-				{
-					t = common.randTrueFalse(),
-					b = common.randTrueFalse(),
-					l = common.randTrueFalse(),
-					r = common.randTrueFalse()
-				},
+			tiles[x][y] = tile:new(
+				routes:new(common.randTrueFalse(),
+							common.randTrueFalse(),
+							common.randTrueFalse(),
+							common.randTrueFalse()
+							),
 				(x-1)*tileWidth,
 				(y-1)*tileHeight+25,
 				tileWidth,
 				tileHeight
 			)
-			B.data[x][y]:draw()
-			B.data[x][y].rect:addEventListener("touch", B.data[x][y])
+			tiles[x][y]:draw()
+			tiles[x][y].rect:addEventListener("touch", tiles[x][y])
 		end
 	end
 	
 	--Runtime:addEventListener( "enterFrame", enterFrame )
 end
 
-initGame({tilesX = 4, tilesY = 5})
+initGame()
