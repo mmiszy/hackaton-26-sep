@@ -79,6 +79,10 @@ function tile:draw ()
 			routes:insert(tile)
 		end
 
+		local centerTile = display.newRect(self.left+miniTileWidth, self.top+miniTileHeight, miniTileWidth, miniTileHeight)
+		centerTile:setFillColor(0,255,0)
+		routes:insert(centerTile)
+
 		container:insert(routes)
 	end
 
