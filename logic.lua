@@ -205,26 +205,5 @@ local function enterFrame( event )
 end
 ]]
 
---test
-math.randomseed(7)
-
-B = board:new()
-B:randomize()
-B:dump()
-
-bug = beetle:new(B)
-
-for i = 0, 20 * 10 do
-	result, reason = bug:run()
-	if not result then
-		print(reason)
-		break
-	end
-end
-
-
-
-
-
-
+return logic
 

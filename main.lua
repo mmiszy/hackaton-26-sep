@@ -1,4 +1,22 @@
-local common = require("common")
+local common = require"common"
+local logic = require"logic"
+
+--test
+math.randomseed(7)
+
+B = board:new()
+B:randomize()
+B:dump()
+
+bug = beetle:new(B)
+
+--[[for i = 0, 20 * 10 do
+	result, reason = bug:run()
+	if not result then
+		print(reason)
+		break
+	end
+end]]
 
 tile = {
 	t = {
@@ -81,6 +99,18 @@ function tile:draw ()
 	return container
 end
 
+local prevTime = system.getTimer()
+local function enterFrame (event)
+	local curTime = event.time
+	local dt = curTime - prevTime
+	prevTime = curTime
+	
+	if ( (curTime - prevTime ) > (1./60.) ) then
+		-- limit how often fps updates
+		-- fps.text = string.format( '%.2f', 1000 / dt )
+	end
+end
+
 function tile:touch (e)
 	if (e.phase == "began") then
 		self.t = {
@@ -91,29 +121,33 @@ function tile:touch (e)
 end
 
 local function initGame (settings)
-	local tiles = {}
-
 
 	local tileWidth = display.contentWidth/settings.tilesX
 	local tileHeight = tileWidth
 
 
-	for y=1, settings.tilesY, 1 do
-		for x=1, settings.tilesX, 1 do
-			if (tiles[x] == nil) then tiles[x] = {} end
-			tiles[x][y] = tile:new(
+	for x=1, settings.tilesX do
+		B.data[x] = { }
+		for y=1, settings.tilesY do
+			
+			B.data[x][y] = tile:new(
 				{
-					t = common.randTrueFalse(), b = common.randTrueFalse(), l = common.randTrueFalse(), r = common.randTrueFalse()
+					t = common.randTrueFalse(),
+					b = common.randTrueFalse(),
+					l = common.randTrueFalse(),
+					r = common.randTrueFalse()
 				},
 				(x-1)*tileWidth,
 				(y-1)*tileHeight+25,
 				tileWidth,
 				tileHeight
 			)
-			tiles[x][y]:draw()
-			tiles[x][y].rect:addEventListener("touch", tiles[x][y])
+			B.data[x][y]:draw()
+			B.data[x][y].rect:addEventListener("touch", B.data[x][y])
 		end
 	end
+	
+	--Runtime:addEventListener( "enterFrame", enterFrame )
 end
 
 initGame({tilesX = 4, tilesY = 5})
