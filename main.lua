@@ -6,18 +6,27 @@ math.randomseed(7)
 local tiles = {}
 local size = { x = 5, y = 4 }
 
-bug = beetle:new({
-	getData = function (x,y) return tiles[x][y].routes end,
-	getSize = function () return size end
-})
-
---[[for i = 0, 20 * 10 do
-	result, reason = bug:run()
-	if not result then
-		print(reason)
-		break
+-- wrapper for beetle including display
+displayBeetle = {
+	logic = beetle:new({
+		getData = function (x,y) return tiles[x][y].routes end,
+		getSize = function () return size end
+	}),
+	
+	draw = function()
+		-- non-class object
+		local self = displayBeetle
+		
+		local x = self.logic.position.x + DIRECTION_MODS[self.logic.direction].x * self.logic.moveInterp
+		local y = self.logic.position.y + DIRECTION_MODS[self.logic.direction].y * self.logic.moveInterp
+		
+		-- size is temporary!
+		local bg = display.newRect(x, y, 30, 30)
+		bg.strokeWidth = 0
+		bg:setReferencePoint(display.CenterReferencePoint)
+		bg:setFillColor(0,0,255)
 	end
-end]]
+}
 
 tile = {
 	left = 0,
@@ -95,10 +104,14 @@ local function enterFrame (event)
 	local dt = curTime - prevTime
 	prevTime = curTime
 	
-	if ( (curTime - prevTime ) > (1./60.) ) then
-		-- limit how often fps updates
-		-- fps.text = string.format( '%.2f', 1000 / dt )
+	-- limit how often fps updates
+	-- fps.text = string.format( '%.2f', 1000 / dt )
+	
+	if ( (curTime - prevTime ) > (1./60.) ) then	
+		bug:run()
 	end
+	
+	displayBeetle.draw()
 end
 
 function tile:touch (e)
@@ -133,7 +146,7 @@ local function initGame (settings)
 		end
 	end
 	
-	--Runtime:addEventListener( "enterFrame", enterFrame )
+	Runtime:addEventListener( "enterFrame", enterFrame )
 end
 
 initGame()
