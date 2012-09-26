@@ -157,10 +157,10 @@ function board:randomize(size)
 	for x = 1, self.size.x do
 		self.data[x] = { }
 		for y = 1, self.size.y do
-			local t = (math.random(0,1) == 0) and true or false;
-			local b = (math.random(0,1) == 0) and true or false;
-			local l = (math.random(0,1) == 0) and true or false;
-			local r = (math.random(0,1) == 0) and true or false;
+			local t = common.randTrueFalse()
+			local b = common.randTrueFalse()
+			local l = common.randTrueFalse()
+			local r = common.randTrueFalse()
 			self.data[x][y] = tile:new(t,b,l,r)
 		end
 	end
