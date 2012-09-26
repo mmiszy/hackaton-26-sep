@@ -2,9 +2,11 @@ local common = require"common"
 require"logic"
 
 --test
-math.randomseed(7)
 local tiles = {}
 local size = { x = 5, y = 6 }
+local tileSize = {};
+tileSize.width = math.min(display.contentWidth/size.x, display.contentHeight/size.y)
+tileSize.height = tileSize.width
 
 bug = beetle:new({
 	getData = function (x,y) return tiles[x][y].routes end,
@@ -114,9 +116,6 @@ end
 
 local function initGame (settings)
 
-	local tileWidth = math.min(display.contentWidth/size.x, display.contentHeight/size.y)
-	local tileHeight = tileWidth
-
 	for x=1, size.x do
 		tiles[x] = { }
 		for y=1, size.y do
@@ -127,10 +126,10 @@ local function initGame (settings)
 							common.randTrueFalse(),
 							common.randTrueFalse()
 							),
-				(x-1)*tileWidth,
-				(y-1)*tileHeight+25,
-				tileWidth,
-				tileHeight
+				(x-1)*tileSize.width,
+				(y-1)*tileSize.height+25,
+				tileSize.width,
+				tileSize.height
 			)
 			tiles[x][y]:draw()
 			tiles[x][y].rect:addEventListener("touch", tiles[x][y])
