@@ -180,6 +180,17 @@ function board:dump()
 	end
 end
 
+function board:tapTile(position)
+    -- t, r, b, l
+	local tile = self.data[position.x][position.y]
+	local off = tile.t
+	tile.t = tile.r
+	tile.r = tile.b
+	tile.b = tile.l
+	tile.l = off
+	self.data[position.x][position.y] = tile
+end
+
 --[[
 local function enterFrame( event )
 	local curTime = event.time
