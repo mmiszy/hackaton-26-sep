@@ -26,7 +26,7 @@ function displayBeetle:new(o)
 			getSize = function () return size end
 		}
 	}
-	o.bg = display.newRect((o.logic.position.x+0.5)*tileSize.width, (o.logic.position.y+0.5)*tileSize.height, tileSize.width*0.75, tileSize.height*0.75)
+	o.bg = display.newRect((o.logic.position.x-0.5)*tileSize.width, (o.logic.position.y-0.5)*tileSize.height, tileSize.width*0.75, tileSize.height*0.75)
 	o.bg.strokeWidth = 0
 	o.bg:setReferencePoint(display.CenterReferencePoint)
 	o.bg:setFillColor(0,0,255)
@@ -35,15 +35,16 @@ end
 
 function displayBeetle:run() 
 	print("beetle run!")
-	self.logic:run() 
+	return self.logic:run() 
 end
 
 function displayBeetle:draw ()
-	local x = self.logic.position.x + DIRECTION_MODS[self.logic.direction].x * self.logic.moveInterp * tileSize.width
-	local y = self.logic.position.y + DIRECTION_MODS[self.logic.direction].y * self.logic.moveInterp * tileSize.height
+	local x = (self.logic.position.x + DIRECTION_MODS[self.logic.direction].x * self.logic.moveInterp - 0.5) * tileSize.width
+	local y = (self.logic.position.y + DIRECTION_MODS[self.logic.direction].y * self.logic.moveInterp - 0.5) * tileSize.height
 	
 	self.bg.x = x
 	self.bg.y = y
+	self.bg:toFront()
 	-- size is temporary!
 end
 
@@ -128,8 +129,11 @@ local prevTime = system.getTimer()
 local function enterFrame (event)
 	local curTime = event.time	
 	
-	if ( (curTime - prevTime ) > (16) ) then	
-		ladyBug:run()
+	if ( (curTime - prevTime ) > (460) ) then	
+		result, reason = ladyBug:run()
+		if not result then
+			os.execute("pause")
+		end
 		prevTime = curTime
 	end
 	

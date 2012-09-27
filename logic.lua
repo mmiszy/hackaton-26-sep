@@ -15,7 +15,7 @@
 require"common"
 
 beetle = {
-	position = { x = 2, y = 2 },
+	position = { x = 1, y = 1 },
 	direction = "down", -- "left", "right", "up"
 	moveInterp = .0, -- how far from center of the block are we?
 	passedBorder = false,
@@ -90,6 +90,7 @@ function beetle:run ()
 	function updateDirectionAtWall(direction, routes)
 		if (direction == "up" and not routes.t) or
 				(direction == "down" and not routes.b) then
+			print ("Turning Beetle!")
 			if routes.l and routes.r then -- randomize
 				return common.randTrueFalse() and "left" or "right"
 			elseif routes.l then
@@ -100,6 +101,7 @@ function beetle:run ()
 		end
 		if (direction == "left" and not routes.l) or
 				(direction == "right" and not routes.r) then
+			print ("Turning Beetle!")
 			if routes.t and routes.b then -- randomize
 				return common.randTrueFalse() and "up" or "down"
 			elseif routes.t then
@@ -108,13 +110,14 @@ function beetle:run ()
 				return "down"
 			end
 		end
+		return direction
 	end
 
 	-- advance the beetle
 	self.moveInterp = self.moveInterp + self.speed
 	-- two cases, when we are unclear
 	-- 1. beetle leaves current square - maybe there isn't a connection?
-	if self.moveInterp >= 0.5 and not self.passedBorder then
+	if self.moveInterp >= 0.0 and not self.passedBorder then
 		local directionMod = DIRECTION_MODS[self.direction]
 		self.position.x = self.position.x + directionMod.x
 		self.position.y = self.position.y + directionMod.y
@@ -132,6 +135,7 @@ function beetle:run ()
 			return nil, "game_over - routes error"
 		end
 		
+		print ("Beetle went into ["..self.position.x..","..self.position.y.."]")
 		self.passedBorder = true
 		-- move is ok - add some points to the score?
 	end
@@ -139,7 +143,7 @@ function beetle:run ()
 	if self.moveInterp >= 1.0 then
 		self.moveInterp = .0
 		self.passedBorder = false
-		print ("Beetle advanced to routes ["..self.position.x..","..self.position.y.."]")
+		print ("Beetle in middle of ["..self.position.x..","..self.position.y.."]")
 		
 		-- check ambiguity
 		direction = updateDirectionAtWall(direction, self.board.getData(self.position))
