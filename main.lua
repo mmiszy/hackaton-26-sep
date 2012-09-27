@@ -28,13 +28,13 @@ function displayBeetle:new(o)
 	}
 	o.bg = display.newRect((o.logic.position.x-0.5)*tileSize.width, (o.logic.position.y-0.5)*tileSize.height, tileSize.width*0.330, tileSize.height*0.330)
 	o.bg.strokeWidth = 0
-	o.bg:setReferencePoint(display.CenterReferencePoint)
+	--o.bg:setReferencePoint(display.CenterReferencePoint)
+	o.bg:setReferencePoint(display.TopCenterReferencePoint)
 	o.bg:setFillColor(0,0,255)
 	return o 
 end
 
 function displayBeetle:run() 
-	print("beetle run!")
 	return self.logic:run() 
 end
 
@@ -129,7 +129,7 @@ local prevTime = system.getTimer()
 local function enterFrame (event)
 	local curTime = event.time	
 	
-	if ( (curTime - prevTime ) > (460) ) then	
+	if ( (curTime - prevTime ) > (16) ) then	
 		result, reason = ladyBug:run()
 		if not result then
 			os.execute("pause")

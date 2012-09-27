@@ -19,7 +19,7 @@ beetle = {
 	direction = "down", -- "left", "right", "up"
 	moveInterp = 0.0, -- how far from center of the block are we?
 	passedBorder = true,
-	speed = 0.05,
+	speed = 0.002,
 	board = nil,
 }
 
@@ -151,7 +151,7 @@ function beetle:run ()
 		self.direction = updateDirectionAtWall(self.direction, self.board.getData(self.position))
 	end
 	
-	print ("Beetle interp = "..self.moveInterp)
+	--print ("Beetle interp = "..self.moveInterp)
 	
 	return "ok"
 end
