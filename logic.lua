@@ -17,8 +17,8 @@ require"common"
 beetle = {
 	position = { x = 1, y = 1 },
 	direction = "down", -- "left", "right", "up"
-	moveInterp = .0, -- how far from center of the block are we?
-	passedBorder = false,
+	moveInterp = 0.0, -- how far from center of the block are we?
+	passedBorder = true,
 	speed = 0.05,
 	board = nil,
 }
@@ -88,6 +88,7 @@ function beetle:run ()
 	end
 	
 	function updateDirectionAtWall(direction, routes)
+		print ("updateDirectionAtWall : ", direction, routes.t, routes.r, routes.b, routes.l)
 		if (direction == "up" and not routes.t) or
 				(direction == "down" and not routes.b) then
 			print ("Turning Beetle!")
@@ -117,7 +118,7 @@ function beetle:run ()
 	self.moveInterp = self.moveInterp + self.speed
 	-- two cases, when we are unclear
 	-- 1. beetle leaves current square - maybe there isn't a connection?
-	if self.moveInterp >= 0.0 and not self.passedBorder then
+	if self.moveInterp >= 0.5 and not self.passedBorder then
 		local directionMod = DIRECTION_MODS[self.direction]
 		self.position.x = self.position.x + directionMod.x
 		self.position.y = self.position.y + directionMod.y
@@ -137,16 +138,17 @@ function beetle:run ()
 		
 		print ("Beetle went into ["..self.position.x..","..self.position.y.."]")
 		self.passedBorder = true
+		self.moveInterp = self.moveInterp - 1.0
 		-- move is ok - add some points to the score?
 	end
 	-- 2. beetle gets to the center of the square - maybe there is an ambiguity, or the track is over
-	if self.moveInterp >= 1.0 then
+	if self.moveInterp >= 0.0 and self.passedBorder then
 		self.moveInterp = .0
 		self.passedBorder = false
-		print ("Beetle in middle of ["..self.position.x..","..self.position.y.."]")
+		print ("Beetle in middle of ["..self.position.x..","..self.position.y.."], checking turns")
 		
 		-- check ambiguity
-		direction = updateDirectionAtWall(direction, self.board.getData(self.position))
+		self.direction = updateDirectionAtWall(self.direction, self.board.getData(self.position))
 	end
 	
 	print ("Beetle interp = "..self.moveInterp)

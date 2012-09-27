@@ -26,7 +26,7 @@ function displayBeetle:new(o)
 			getSize = function () return size end
 		}
 	}
-	o.bg = display.newRect((o.logic.position.x-0.5)*tileSize.width, (o.logic.position.y-0.5)*tileSize.height, tileSize.width*0.75, tileSize.height*0.75)
+	o.bg = display.newRect((o.logic.position.x-0.5)*tileSize.width, (o.logic.position.y-0.5)*tileSize.height, tileSize.width*0.330, tileSize.height*0.330)
 	o.bg.strokeWidth = 0
 	o.bg:setReferencePoint(display.CenterReferencePoint)
 	o.bg:setFillColor(0,0,255)
