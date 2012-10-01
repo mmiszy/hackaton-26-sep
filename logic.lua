@@ -85,7 +85,7 @@ function routes:newRandom()
 							"")
 							
 	-- randomize the bonus
-	if math.random(1,10) == 1 then
+	if math.random(1,15) == 1 then
 		temp.special = "bonus"
 	end
 	

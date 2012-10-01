@@ -83,39 +83,45 @@ function tile:draw ()
 			container[i].parent:remove(container[i])
 		end
 
+		local group = display.newGroup()
+		
+		local normalColor = {150, 0, 0}
+		local bonusColor = {250, 10, 10}		
+		
+		local color = { 0, 255, 0}
+		local bgColor = self.routes.special == "bonus" and bonusColor or normalColor
+		
 		local bg = display.newRect(self.left, self.top, self.width, self.height)
 		bg.strokeWidth = 1
-		bg:setFillColor(255,0,0)
+		bg:setFillColor(bgColor[1], bgColor[2], bgColor[3])
 		container:insert(bg)
-
-		local routes = display.newGroup()
 
 		if (self.routes.t) then
 			local tile = display.newRect(self.left+miniTileWidth, self.top, miniTileWidth, miniTileHeight)
-			tile:setFillColor(0,255,0)
-			routes:insert(tile)
+			tile:setFillColor(color[1], color[2], color[3])
+			group:insert(tile)
 		end
 		if (self.routes.b) then
 			local tile = display.newRect(self.left+miniTileWidth, self.top+self.height-miniTileHeight, miniTileWidth, miniTileHeight)
-			tile:setFillColor(0,255,0)
-			routes:insert(tile)
+			tile:setFillColor(color[1], color[2], color[3])
+			group:insert(tile)
 		end
 		if (self.routes.l) then
 			local tile = display.newRect(self.left, self.top+miniTileHeight, miniTileWidth, miniTileHeight)
-			tile:setFillColor(0,255,0)
-			routes:insert(tile)
+			tile:setFillColor(color[1], color[2], color[3])
+			group:insert(tile)
 		end
 		if (self.routes.r) then
 			local tile = display.newRect(self.left+self.width-miniTileWidth, self.top+miniTileHeight, miniTileWidth, miniTileHeight)
-			tile:setFillColor(0,255,0)
-			routes:insert(tile)
+			tile:setFillColor(color[1], color[2], color[3])
+			group:insert(tile)
 		end
 
 		local centerTile = display.newRect(self.left+miniTileWidth, self.top+miniTileHeight, miniTileWidth, miniTileHeight)
-		centerTile:setFillColor(0,255,0)
-		routes:insert(centerTile)
+		centerTile:setFillColor(color[1], color[2], color[3])
+		group:insert(centerTile)
 
-		container:insert(routes)
+		container:insert(group)
 	end
 
 	drawRoutes()
