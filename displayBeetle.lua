@@ -24,11 +24,20 @@ function displayBeetle:new(o, tiles)
 	--o.bg:setReferencePoint(display.CenterReferencePoint)
 	o.bg:setReferencePoint(display.TopCenterReferencePoint)
 	o.bg:setFillColor(0,0,255)
+
+	o.scoreText = display.newText( "", 0, 0, native.systemFont, 40 )
+	o.scoreText.x = display.contentWidth / 2
+	o.scoreText.y = display.contentHeight - 30
+	o.scoreText:setTextColor( 255,110,110 )
 	return o 
 end
 
 function displayBeetle:run() 
 	return self.logic:run() 
+end
+
+function displayBeetle:drawScore()
+	self.scoreText.text = self.logic.points
 end
 
 function displayBeetle:draw ()
@@ -39,6 +48,9 @@ function displayBeetle:draw ()
 	self.bg.y = y
 	self.bg:toFront()
 	-- size is temporary!
+
+	self:drawScore()
+	self.scoreText:toFront()
 end
 
 return displayBeetle

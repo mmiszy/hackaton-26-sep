@@ -18,9 +18,10 @@ beetle = {
 	position = { x = 1, y = 1 },
 	direction = "down", -- "left", "right", "up"
 	moveInterp = 0.0, -- how far from center of the block are we?
-	passedBorder = true,
-	speed = 0.002,
-	board = nil,
+	passedBorder = true, -- if we are running "in" or "out" of the block
+	speed = 0.01, -- per frame. 1.0 = tile size
+	board = nil, -- board structure "pointer"
+	points = 0, -- points gathered by the given beetle
 }
 
 function beetle:new(o) 
@@ -43,21 +44,55 @@ routes = {
 	b = true, --bottom
 	l = true, --left
 	r = true, --right
+	special = "", -- bonus, start, end
 }
 
-function routes:new (t, b, l, r)
+function routes:new (t, b, l, r, special)
 	o = { 
 		t = t,
 		b = b,
 		l = l,
-		r = r
+		r = r,
+		special = special,
 	}
 	setmetatable(o, self)
 	self.__index = self
 	return o
 end
 
-function routes:tap()
+function routes:newRandom()
+	-- it was actually simpler than do it procedurally
+	local possibleTiles = {
+		{ false, false, true, true },
+		{ false, true, false, true },
+		{ false, true, true, false },
+		{ false, true, true, true },
+		{ true, false, false, true },
+		{ true, false, true, false },
+		{ true, false, true, true },
+		{ true, true, false, false },
+		{ true, true, false, true },
+		{ true, true, true, false },
+		{ true, true, true, true }
+	}
+	
+	local number = math.random(1,11)
+
+	local temp = routes:new(possibleTiles[number][1],
+							possibleTiles[number][2],
+							possibleTiles[number][3],
+							possibleTiles[number][4],
+							"")
+							
+	-- randomize the bonus
+	if math.random(1,15) == 1 then
+		temp.special = "bonus"
+	end
+	
+	return temp
+end
+
+function routes:tap() -- rotation of the block
 	local off = self.t
 	self.t = self.r
 	self.r = self.b
@@ -69,6 +104,7 @@ end
 -----------------------
 
 function beetle:run ()
+	-- bounds of the array
 	function goingOutOfBounds(position, direction, size)
 		if direction=="left" and position.x < 1 then return true
 		elseif direction=="right" and position.x > size.x then return true
@@ -79,6 +115,7 @@ function beetle:run ()
 		return false
 	end	
 	
+	-- border of the next tile
 	function canRunIntoTile(direction, routes) 
 		if direction == "up" then return routes.b
 		elseif direction == "down" then return routes.t
@@ -87,7 +124,8 @@ function beetle:run ()
 		end
 	end
 	
-	function updateDirectionAtWall(direction, routes)
+	-- T-section dispatcher
+	function updateDirectionAtTSection(direction, routes)
 		print ("updateDirectionAtWall : ", direction, routes.t, routes.r, routes.b, routes.l)
 		if (direction == "up" and not routes.t) or
 				(direction == "down" and not routes.b) then
@@ -112,6 +150,11 @@ function beetle:run ()
 			end
 		end
 		return direction
+	end
+
+	-- end tile dispatcher
+	function checkIfEnd(routes)
+		return routes.special == "end"
 	end
 
 	-- advance the beetle
@@ -142,16 +185,29 @@ function beetle:run ()
 		-- move is ok - add some points to the score?
 	end
 	-- 2. beetle gets to the center of the square - maybe there is an ambiguity, or the track is over
+	-- points are awarded at this moment
 	if self.moveInterp >= 0.0 and self.passedBorder then
 		self.moveInterp = .0
 		self.passedBorder = false
 		print ("Beetle in middle of ["..self.position.x..","..self.position.y.."], checking turns")
 		
+		local tempRoutes = self.board.getData(self.position)
+		
+		-- check for end tile
+		if checkIfEnd(tempRoutes) then
+			return "end"
+		end
+		
 		-- check ambiguity
-		self.direction = updateDirectionAtWall(self.direction, self.board.getData(self.position))
+		self.direction = updateDirectionAtTSection(self.direction, tempRoutes)
+		
+		-- check for bonus tile
+		if tempRoutes.special == "bonus" then
+			self.points = self.points + 50
+		else
+			self.points = self.points + 10
+		end
 	end
-	
-	--print ("Beetle interp = "..self.moveInterp)
 	
 	return "ok"
 end

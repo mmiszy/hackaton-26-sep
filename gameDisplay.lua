@@ -34,11 +34,7 @@ function gameDisplay:initGame (settings)
 		for y=1, gameConfig.size.y do
 			
 			self.tiles[x][y] = tile:new(
-				routes:new(common.randTrueFalse(),
-							common.randTrueFalse(),
-							common.randTrueFalse(),
-							common.randTrueFalse()
-							),
+				routes:newRandom(),
 				(x-1)*gameConfig.tileSize.width,
 				(y-1)*gameConfig.tileSize.height+25,
 				gameConfig.tileSize.width,
