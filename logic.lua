@@ -202,7 +202,7 @@ function beetle:run ()
 		self.direction = updateDirectionAtTSection(self.direction, tempRoutes)
 		
 		-- check for bonus tile
-		if not tempRoutes.bonus == "" then
+		if tempRoutes.special == "bonus" then
 			self.points = self.points + 50
 		else
 			self.points = self.points + 10
