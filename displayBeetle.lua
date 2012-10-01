@@ -16,7 +16,7 @@ function displayBeetle:new(o, tiles)
 				print ("xy "..position.x.." "..position.y)
 				return tiles[position.x][position.y].routes
 			end,
-			getSize = function () return size end
+			getSize = function () return gameConfig.size end
 		}
 	}
 	o.bg = display.newRect((o.logic.position.x-0.5)*gameConfig.tileSize.width, (o.logic.position.y-0.5)*gameConfig.tileSize.height, gameConfig.tileSize.width*0.330, gameConfig.tileSize.height*0.330)
@@ -29,7 +29,7 @@ function displayBeetle:new(o, tiles)
 	o.scoreText.x = display.contentWidth / 2
 	o.scoreText.y = display.contentHeight - 30
 	o.scoreText:setTextColor( 255,110,110 )
-	return o 
+	return o
 end
 
 function displayBeetle:run() 
