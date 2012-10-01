@@ -154,11 +154,7 @@ local function initGame (settings)
 		for y=1, size.y do
 			
 			tiles[x][y] = tile:new(
-				routes:new(common.randTrueFalse(),
-							common.randTrueFalse(),
-							common.randTrueFalse(),
-							common.randTrueFalse()
-							),
+				routes:newRandom(),
 				(x-1)*tileSize.width,
 				(y-1)*tileSize.height+25,
 				tileSize.width,
@@ -171,5 +167,8 @@ local function initGame (settings)
 	
 	Runtime:addEventListener( "enterFrame", enterFrame )
 end
+
+-- windows emulator workaround
+os.execute("cls")
 
 initGame()
