@@ -23,8 +23,10 @@ end
 
 function gameDisplay:update ()
 	result, reason = gameDisplay.ladyBug:run()
-	if not result then
-		os.execute("pause")
+	for x=1, gameConfig.size.x do
+		for y=1, gameConfig.size.y do
+			self.tiles[x][y]:update()
+		end
 	end
 	gameDisplay.ladyBug:draw()
 end

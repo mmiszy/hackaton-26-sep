@@ -165,6 +165,9 @@ function beetle:run ()
 	-- two cases, when we are unclear
 	-- 1. beetle leaves current square - maybe there isn't a connection?
 	if self.moveInterp >= 0.5 and not self.passedBorder then
+		local currentTile = self.board.getData(self.position)
+		currentTile.special = "closed"
+
 		local directionMod = DIRECTION_MODS[self.direction]
 		self.position.x = self.position.x + directionMod.x
 		self.position.y = self.position.y + directionMod.y

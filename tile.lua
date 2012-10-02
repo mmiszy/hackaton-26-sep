@@ -39,6 +39,9 @@ function tile:draw ()
 		local color = { 0, 255, 0}
 		
 		local bgColor = normalColor
+		if not self.routes.canRotate then
+			bgColor = {255, 255, 255}
+		end
 		
 		if self.routes.special == "bonus" then
 			bgColor = bonusColor
@@ -85,6 +88,11 @@ function tile:draw ()
 	self.rect = container
 
 	return container
+end
+
+function tile:update ()
+	if not self.routes.canRotate then self.rect[1]:setFillColor(255, 255, 255) end
+	if self.routes.special == "closed" then self.rect[1]:setFillColor(0,0,0) end
 end
 
 function tile:touch (e)
