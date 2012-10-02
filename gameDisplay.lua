@@ -28,6 +28,15 @@ local function enterFrame (event)
 	gameDisplay.ladyBug:draw()
 end
 
+function gameDisplay:clear ()
+	for x=1, gameConfig.size.x do
+		for y=1, gameConfig.size.y do
+			self.tiles[x][y].rect:removeEventListener("touch", self.tiles[x][y])
+			self.tiles[x][y] = nil
+		end
+	end
+end
+
 function gameDisplay:initGame (settings)
 	for x=1, gameConfig.size.x do
 		self.tiles[x] = { }
