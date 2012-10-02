@@ -47,6 +47,7 @@ function gameDisplay:initGame (settings)
 	
 	-- update the start tile
 	self.tiles[startPosition.x][startPosition.y].routes.special = "start"
+	self.tiles[startPosition.x][startPosition.y].routes.canRotate = false
 	
 	-- all the data members are set correctly now
 	for x=1, gameConfig.size.x do
