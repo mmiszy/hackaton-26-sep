@@ -28,8 +28,8 @@ end
 
 function gameDisplay:initGame (settings)
 	-- randomize the start location
-	local startPosition = { x = math.random(1, gameConfig.size.x),
-							y = math.random(1, gameConfig.size.y) }
+	local startPosition = { x = math.random(2, gameConfig.size.x-1),
+							y = math.random(2, gameConfig.size.y-1) }
 
 	-- randomize the board
 	for x=1, gameConfig.size.x do
