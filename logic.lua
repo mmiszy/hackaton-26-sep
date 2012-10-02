@@ -45,6 +45,7 @@ routes = {
 	l = true, --left
 	r = true, --right
 	special = "", -- bonus, start, end
+	canRotate = true, -- you can't rotate some special tiles and the tile beetle is at
 }
 
 function routes:new (t, b, l, r, special)
@@ -93,11 +94,13 @@ function routes:newRandom()
 end
 
 function routes:tap() -- rotation of the block
-	local off = self.t
-	self.t = self.r
-	self.r = self.b
-	self.b = self.l
-	self.l = off
+	if self.canRotate then
+		local off = self.t
+		self.t = self.r
+		self.r = self.b
+		self.b = self.l
+		self.l = off
+	end
 end
 
 -- implementation
@@ -180,6 +183,9 @@ function beetle:run ()
 		end
 		
 		print ("Beetle went into ["..self.position.x..","..self.position.y.."]")
+		
+		nextTile.canRotate = false
+		
 		self.passedBorder = true
 		self.moveInterp = self.moveInterp - 1.0
 		-- move is ok - add some points to the score?

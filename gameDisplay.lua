@@ -31,8 +31,8 @@ end
 
 function gameDisplay:initGame (settings)
 	-- randomize the start location
-	local startPosition = { x = math.random(1, gameConfig.size.x),
-							y = math.random(1, gameConfig.size.y) }
+	local startPosition = { x = math.random(2, gameConfig.size.x-1),
+							y = math.random(2, gameConfig.size.y-1) }
 
 	-- randomize the board
 	for x=1, gameConfig.size.x do
@@ -50,6 +50,7 @@ function gameDisplay:initGame (settings)
 	
 	-- update the start tile
 	self.tiles[startPosition.x][startPosition.y].routes.special = "start"
+	self.tiles[startPosition.x][startPosition.y].routes.canRotate = false
 	
 	-- all the data members are set correctly now
 	for x=1, gameConfig.size.x do
