@@ -6,25 +6,11 @@ local tile = require"tile"
 
 local gameConfig = require"gameConfig"
 
+
 local gameDisplay = {
 	tiles = {},
 	ladyBug = nil,
 }
-
-local prevTime = system.getTimer()
-local function enterFrame (event)
-	local curTime = event.time	
-	
-	if ( (curTime - prevTime ) > (16) ) then	
-		result, reason = gameDisplay.ladyBug:run()
-		if not result then
-			os.execute("pause")
-		end
-		prevTime = curTime
-	end
-	
-	gameDisplay.ladyBug:draw()
-end
 
 function gameDisplay:clear ()
 	for x=1, gameConfig.size.x do
@@ -33,6 +19,14 @@ function gameDisplay:clear ()
 			self.tiles[x][y] = nil
 		end
 	end
+end
+
+function gameDisplay:update ()
+	result, reason = gameDisplay.ladyBug:run()
+	if not result then
+		os.execute("pause")
+	end
+	gameDisplay.ladyBug:draw()
 end
 
 function gameDisplay:initGame (settings)
@@ -68,8 +62,6 @@ function gameDisplay:initGame (settings)
 	-- put the beetle at start
 	self.ladyBug = displayBeetle:new({}, self.tiles)
 	self.ladyBug.logic.position = startPosition
-	
-	Runtime:addEventListener( "enterFrame", enterFrame )
 end
 
 
