@@ -33,12 +33,18 @@ function tile:draw ()
 		local group = display.newGroup()
 		
 		local normalColor = {150, 0, 0}
-		local bonusColor = {250, 10, 10}		
+		local bonusColor = {250, 10, 10}
+		local startColor = {180, 0, 180}
 		
 		local color = { 0, 255, 0}
-		local bgColor = self.routes.special == "bonus" and bonusColor or normalColor
-
-
+		
+		local bgColor = normalColor
+		
+		if self.routes.special == "bonus" then
+			bgColor = bonusColor
+		elseif self.routes.special == "start" then
+			bgColor = startColor
+		end
 
 		local bg = display.newRect(self.left, self.top, self.width, self.height)
 		bg.strokeWidth = 1
