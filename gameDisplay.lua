@@ -23,6 +23,12 @@ end
 
 function gameDisplay:update ()
 	result, reason = gameDisplay.ladyBug:run()
+	
+	-- check for game over
+	if not result then
+		return "menu" -- next state that game is being put into
+	end
+	
 	for x=1, gameConfig.size.x do
 		for y=1, gameConfig.size.y do
 			self.tiles[x][y]:update()
