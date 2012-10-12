@@ -1,41 +1,66 @@
 local gameDisplay = require"gameDisplay"
+local mainMenu = require"menu"
 
 
-local currentState = "game"
 local enterFrame = function () return end
-
-local gameStates = {
-	menu = function ()
-		return function () end
-	end,
-	game = function ()
-		gameDisplay:initGame()
-		return function () gameDisplay:update() end
-	end,
-}
+local gameStates = {}
+local currentState = ""
 
 local function getFrame ()
 	local prevTime = system.getTimer()
-	local curFun = nil
+	if not curFun then local curFun = nil else curFun = nil end
 	return function (event)
 		local curTime = event.time	
 		
-		if ( (curTime - prevTime ) > (16) ) then	
+		if ( (curTime - prevTime ) > (16) ) then
 			if not curFun then
 				curFun = gameStates[currentState]()
-			else
-				curFun()
 			end
+			
+			curFun()
 			prevTime = curTime
 		end
 	end
 end
 
 local function changeState (name)
-	if not gameStates[name] then print"chuj" return end
+	if not gameStates[name] then print "no such game state" return end
+	if currentState == name then return end
+	currentState = name
+	print "co jest kurwa"
 	enterFrame = getFrame()
 end
 
-changeState("game")
+gameStates.menu = function ()
+	mainMenu.initMenu({
+		start = {
+			x = display.contentWidth/2 - 150,
+			y = display.contentHeight/3 - 30,
+			onEvent = function (e)
+				if (e.phase == "release") then
+					changeState("game")
+				end
+			end
+		},
+		exit = {
+			x = display.contentWidth/2 - 150,
+			y = 2*display.contentHeight/3 - 30,
+			onEvent = function (e)
+				if (e.phase == "release") then
+					os.exit()
+				end
+			end
+		}
+	})
+	return function () end
+end
+
+gameStates.game = function ()
+	print "gra?"
+	gameDisplay:initGame()
+	return function () gameDisplay:update() end
+end
+
+changeState("menu")
 
 Runtime:addEventListener( "enterFrame", enterFrame )
