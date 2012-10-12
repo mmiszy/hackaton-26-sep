@@ -48,7 +48,7 @@ routes = {
 	canRotate = true, -- you can't rotate some special tiles and the tile beetle is at
 }
 
-function routes:new (t, b, l, r, special)
+function routes:new (t, r, b, l, special)
 	o = { 
 		t = t,
 		b = b,
@@ -64,25 +64,42 @@ end
 function routes:newRandom()
 	-- it was actually simpler than do it procedurally
 	local possibleTiles = {
-		{ false, false, true, true },
-		{ false, true, false, true },
-		{ false, true, true, false },
-		{ false, true, true, true },
-		{ true, false, false, true },
-		{ true, false, true, false },
-		{ true, false, true, true },
-		{ true, true, false, false },
-		{ true, true, false, true },
-		{ true, true, true, false },
-		{ true, true, true, true }
+		{ -- "easy" tiles - L
+			{ false, false, true, true }, -- L
+			{ false, true, true, false }, -- L
+			{ true, false, false, true }, -- L
+			{ true, true, false, false }, -- L
+		},
+		{ -- "medium" tiles - I and +
+			{ false, true, false, true }, -- I
+			{ true, false, true, false }, -- I
+			{ true, true, true, true }, -- +
+		},
+		{ -- "hard" tiles - T
+			{ false, true, true, true }, -- T
+			{ true, false, true, true }, -- T
+			{ true, true, false, true }, -- T
+			{ true, true, true, false }, -- T
+		}
 	}
 	
-	local number = math.random(1,11)
+	local hardness
+	local interp = math.random(1,10000)
+	
+	if interp <= 5000 then
+		hardness = 1
+	else if interp <= 7500 then
+		hardness = 2
+	else
+		hardness = 3
+		
+	
+	local number = math.random(1, #(possibleTiles[hardness]))
 
-	local temp = routes:new(possibleTiles[number][1],
-							possibleTiles[number][2],
-							possibleTiles[number][3],
-							possibleTiles[number][4],
+	local temp = routes:new(possibleTiles[hardness][number][1],
+							possibleTiles[hardness][number][2],
+							possibleTiles[hardness][number][3],
+							possibleTiles[hardness][number][4],
 							"")
 							
 	-- randomize the bonus

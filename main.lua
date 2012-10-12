@@ -32,7 +32,7 @@ local function getFrame ()
 end
 
 local function changeState (name)
-	if not gameStates[name] then print"chuj" return end
+	if not gameStates[name] then print"State not present" return end
 	enterFrame = getFrame()
 end
 
