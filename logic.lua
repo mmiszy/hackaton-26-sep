@@ -88,11 +88,11 @@ function routes:newRandom()
 	
 	if interp <= 5000 then
 		hardness = 1
-	else if interp <= 7500 then
+	elseif interp <= 7500 then
 		hardness = 2
 	else
 		hardness = 3
-		
+	end
 	
 	local number = math.random(1, #(possibleTiles[hardness]))
 
