@@ -5,6 +5,7 @@ local mainMenu = require"menu"
 local enterFrame = function () return end
 local gameStates = {}
 local currentState = ""
+local changeState
 
 local function getFrame ()
 	local prevTime = system.getTimer()
@@ -17,17 +18,21 @@ local function getFrame ()
 				curFun = gameStates[currentState]()
 			end
 			
-			curFun()
+			local state = curFun()
+
+			if (state) then
+				gameDisplay:clear()
+				changeState(state)
+			end
 			prevTime = curTime
 		end
 	end
 end
 
-local function changeState (name)
+changeState = function (name)
 	if not gameStates[name] then print "no such game state" return end
 	if currentState == name then return end
 	currentState = name
-	print "co jest kurwa"
 	enterFrame = getFrame()
 end
 
@@ -56,9 +61,8 @@ gameStates.menu = function ()
 end
 
 gameStates.game = function ()
-	print "gra?"
 	gameDisplay:initGame()
-	return function () gameDisplay:update() end
+	return function () return gameDisplay:update() end
 end
 
 changeState("menu")

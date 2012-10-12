@@ -14,7 +14,7 @@ function displayBeetle:new(o, tiles)
 			getData = function (position)
 				for k,v in pairs(position) do print(k,v) end
 				print ("xy "..position.x.." "..position.y)
-				return tiles[position.x][position.y].routes
+				return tiles[position.x] and tiles[position.x][position.y] and tiles[position.x][position.y].routes
 			end,
 			getSize = function () return gameConfig.size end
 		}

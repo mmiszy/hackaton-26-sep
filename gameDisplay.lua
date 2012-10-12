@@ -16,6 +16,12 @@ function gameDisplay:clear ()
 	for x=1, gameConfig.size.x do
 		for y=1, gameConfig.size.y do
 			self.tiles[x][y].rect:removeEventListener("touch", self.tiles[x][y])
+			local stage = display.getCurrentStage()
+			while stage.numChildren > 0 do
+				local obj = stage[1]
+				obj:removeSelf()
+				obj = nil
+			end
 			self.tiles[x][y] = nil
 		end
 	end
