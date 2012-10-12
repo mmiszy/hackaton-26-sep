@@ -34,7 +34,7 @@ end
 gameStates.menu = function ()
 	mainMenu.initMenu({
 		start = {
-			x = display.contentWidth/2 - 150,
+			x = display.contentWidth/2,
 			y = display.contentHeight/3 - 30,
 			onEvent = function (e)
 				if (e.phase == "release") then
@@ -43,7 +43,7 @@ gameStates.menu = function ()
 			end
 		},
 		exit = {
-			x = display.contentWidth/2 - 150,
+			x = display.contentWidth/2,
 			y = 2*display.contentHeight/3 - 30,
 			onEvent = function (e)
 				if (e.phase == "release") then
