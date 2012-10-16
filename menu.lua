@@ -2,7 +2,7 @@ local widget = require"widget"
 
 return {
 	initMenu = function (options)
-		local start = widget.newButton{
+		start = widget.newButton{
 			default = "buttonRed.png",
 			over = "buttonRedOver.png",
 			id = "startButton",
@@ -13,7 +13,7 @@ return {
 		start.x = options.start.x or 160
 		start.y = options.start.y or 160
 
-		local exit = widget.newButton{
+		exit = widget.newButton{
 			default = "buttonRed.png",
 			over = "buttonRedOver.png",
 			id = "exitButton",
@@ -23,5 +23,10 @@ return {
 		}
 		exit.x = options.exit.x or 160
 		exit.y = options.exit.y or 160
+	end,
+	clear = function ()
+		print "clearing menu display!"
+		display.remove(start)
+		display.remove(exit)
 	end
 }

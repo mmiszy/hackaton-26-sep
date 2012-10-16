@@ -9,19 +9,19 @@ local changeState
 
 local function getFrame ()
 	local prevTime = system.getTimer()
+	if curFun and curFun.clear then curFun.clear() end
 	if not curFun then local curFun = nil else curFun = nil end
 	return function (event)
-		local curTime = event.time	
+		local curTime = event.time
+
+		if not curFun then
+			curFun = gameStates[currentState]()
+		end
 		
 		if ( (curTime - prevTime ) > (16) ) then
-			if not curFun then
-				curFun = gameStates[currentState]()
-			end
-			
-			local state = curFun()
+			local state = curFun.run()
 
 			if (state) then
-				gameDisplay:clear()
 				changeState(state)
 			end
 			prevTime = curTime
@@ -57,12 +57,18 @@ gameStates.menu = function ()
 			end
 		}
 	})
-	return function () end
+	return {
+		run = function () return end,
+		clear = function () mainMenu.clear() return end
+	}
 end
 
 gameStates.game = function ()
 	gameDisplay:initGame()
-	return function () return gameDisplay:update() end
+	return {
+		run = function () return gameDisplay:update() end,
+		clear = function () return gameDisplay:clear() end
+	}
 end
 
 changeState("menu")
