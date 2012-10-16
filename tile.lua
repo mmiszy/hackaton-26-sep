@@ -36,7 +36,7 @@ function tile:draw ()
 		local bonusColor = {250, 10, 10}
 		local startColor = {180, 0, 180}
 		
-		local color = { 0, 255, 0}
+		local color = { 0, 255, 255}
 		
 		local bgColor = normalColor
 		if not self.routes.canRotate then
@@ -48,10 +48,39 @@ function tile:draw ()
 		elseif self.routes.special == "start" then
 			bgColor = startColor
 		end
-
-		local bg = display.newRect(self.left, self.top, self.width, self.height)
+		
+		-- sequence data about background tiles
+		local sequenceData = {
+			{ 
+				name = "normal",  --name of animation sequence
+				start = 1,  --starting frame index
+				count = 1,  --total number of frames to animate consecutively before stopping or looping
+				--time = 800,
+			},  --if defining more sequences, place a comma here and proceed to the next sequence sub-table
+			{
+				name = "closed",
+				start = 2,
+				count = 1,
+			}
+		}
+		-- image description
+		local sheetData = { 
+		  width = 128,  --the width of each frame
+		  height = 128,  --the height of each frame
+		  numFrames = 2,  --the total number of frames on the sheet
+		  sheetContentWidth = 128,  --the total width of the image sheet (see note below)?
+		  sheetContentHeight = 256  --the total height of the image sheet (see note below)?
+		}
+		local imageSheet = graphics.newImageSheet( "grass3.jpg", sheetData )
+	
+		local bg = display.newSprite( imageSheet, sequenceData )
+		bg:setSequence("normal")
+		bg:setReferencePoint(display.TopLeftReferencePoint)
+		bg.x = self.left
+		bg.y = self.top
+		--[[local bg = display.newRect(self.left, self.top, self.width, self.height)
 		bg.strokeWidth = 1
-		bg:setFillColor(bgColor[1], bgColor[2], bgColor[3])
+		bg:setFillColor(bgColor[1], bgColor[2], bgColor[3])]]
 		container:insert(bg)
 
 
@@ -91,8 +120,12 @@ function tile:draw ()
 end
 
 function tile:update ()
+	-- change here for background update
 	if not self.routes.canRotate then self.rect[1]:setFillColor(255, 255, 255) end
-	if self.routes.special == "closed" then self.rect[1]:setFillColor(0,0,0) end
+	--if self.routes.special == "closed" then self.rect[1]:setFillColor(0,0,0) end
+	if self.routes.special == "closed" then
+		self.rect[1]:setSequence("closed")
+	end
 end
 
 function tile:touch (e)

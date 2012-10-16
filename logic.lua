@@ -181,7 +181,7 @@ function beetle:run ()
 	self.moveInterp = self.moveInterp + self.speed
 	-- two cases, when we are unclear
 	-- 1. beetle leaves current square - maybe there isn't a connection?
-	if self.moveInterp >= 0.5 and not self.passedBorder then
+	if self.moveInterp >= 0.333333 and not self.passedBorder then
 		local currentTile = self.board.getData(self.position)
 		if (not currentTile) then return end
 		currentTile.special = "closed"
