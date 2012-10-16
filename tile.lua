@@ -78,6 +78,8 @@ function tile:draw ()
 		bg:setReferencePoint(display.TopLeftReferencePoint)
 		bg.x = self.left
 		bg.y = self.top
+		bg.width = self.width
+		bg.height = self.height
 		--[[local bg = display.newRect(self.left, self.top, self.width, self.height)
 		bg.strokeWidth = 1
 		bg:setFillColor(bgColor[1], bgColor[2], bgColor[3])]]
@@ -125,6 +127,8 @@ function tile:update ()
 	--if self.routes.special == "closed" then self.rect[1]:setFillColor(0,0,0) end
 	if self.routes.special == "closed" then
 		self.rect[1]:setSequence("closed")
+		self.rect[1].width = self.width
+		self.rect[1].height = self.height
 	end
 end
 
