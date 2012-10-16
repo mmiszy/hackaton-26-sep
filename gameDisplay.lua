@@ -13,6 +13,7 @@ local gameDisplay = {
 }
 
 function gameDisplay:clear ()
+	print "clearing game display!"
 	for x=1, gameConfig.size.x do
 		for y=1, gameConfig.size.y do
 			self.tiles[x][y].rect:removeEventListener("touch", self.tiles[x][y])
