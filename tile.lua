@@ -52,17 +52,14 @@ function tile:draw ()
 	bg:setReferencePoint(display.TopLeftReferencePoint)
 	bg.x = self.left
 	bg.y = self.top
-	bg.width = gameConfig.tileSize.width
-	bg.height = gameConfig.tileSize.height
+	bg.x = bg.x + (gameConfig.tileSize.width - 128) / 2
+	bg.y = bg.y + (gameConfig.tileSize.height - 128) / 2
 	self.bg = bg
 	
 	self:update()
 end
 
 function tile:update ()
-	-- change here for background update
-	--if not self.routes.canRotate then self.rect[1]:setFillColor(255, 255, 255) end
-	--if self.routes.special == "closed" then self.rect[1]:setFillColor(0,0,0) end
 	if self.routes.special == "closed" then
 		self.bg:setSequence("closed")
 		self.bg:setFrame(1)
