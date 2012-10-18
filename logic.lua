@@ -137,6 +137,10 @@ function beetle:run ()
 	
 	-- border of the next tile
 	function canRunIntoTile(direction, routes) 
+		if routes.special == "closed" then
+			return false
+		end
+		
 		if direction == "up" then return routes.b
 		elseif direction == "down" then return routes.t
 		elseif direction == "left" then return routes.r
