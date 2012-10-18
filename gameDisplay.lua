@@ -45,6 +45,8 @@ function gameDisplay:update ()
 end
 
 function gameDisplay:initGame (settings)
+	local bg = display.newImageRect( "bg.png", 1536, 2048 )
+	bg:toBack();
 	-- randomize the start location
 	local startPosition = { x = math.random(2, gameConfig.size.x-1),
 							y = math.random(2, gameConfig.size.y-1) }
