@@ -6,6 +6,7 @@ local tile = require"tile"
 
 local gameConfig = require"gameConfig"
 
+local weirdDisplayOffsetY = 25
 
 local gameDisplay = {
 	tiles = {},
@@ -15,7 +16,7 @@ local gameDisplay = {
 function gameDisplay:clear ()
 	for x=1, gameConfig.size.x do
 		for y=1, gameConfig.size.y do
-			self.tiles[x][y].rect:removeEventListener("touch", self.tiles[x][y])
+			self.tiles[x][y].bg:removeEventListener("touch", self.tiles[x][y])
 			local stage = display.getCurrentStage()
 			while stage.numChildren > 0 do
 				local obj = stage[1]
@@ -55,11 +56,14 @@ function gameDisplay:initGame (settings)
 			self.tiles[x][y] = tile:new(
 				routes:newRandom(),
 				(x-1)*gameConfig.tileSize.width,
-				(y-1)*gameConfig.tileSize.height+25,
-				gameConfig.tileSize.width,
-				gameConfig.tileSize.height
+				(y-1)*gameConfig.tileSize.height + weirdDisplayOffsetY
 			)
+			io.write (""..(self.tiles[x][y].routes.t and "1" or "0")
+					..(self.tiles[x][y].routes.r and "1" or "0")
+					..(self.tiles[x][y].routes.b and "1" or "0")
+					..(self.tiles[x][y].routes.l and "1" or "0").. " ")
 		end
+		print (" ")
 	end
 	
 	-- update the start tile
@@ -70,7 +74,7 @@ function gameDisplay:initGame (settings)
 	for x=1, gameConfig.size.x do
 		for y=1, gameConfig.size.y do
 			self.tiles[x][y]:draw()
-			self.tiles[x][y].rect:addEventListener("touch", self.tiles[x][y])
+			self.tiles[x][y].bg:addEventListener("touch", self.tiles[x][y])
 		end
 	end
 
