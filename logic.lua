@@ -16,12 +16,12 @@ require"common"
 
 beetle = {
 	position = { x = 1, y = 1 },
-	direction = "down", -- "left", "right", "up"
-	moveInterp = 0.0, -- how far from center of the block are we?
-	passedBorder = true, -- if we are running "in" or "out" of the block
-	speed = 0.01, -- per frame. 1.0 = tile size
-	board = nil, -- board structure "pointer"
-	points = 0, -- points gathered by the given beetle
+	direction = "down", 	-- "left", "right", "up"
+	moveInterp = 0.0, 		-- how far from center of the block are we?
+	passedBorder = true, 	-- if we are running "in" or "out" of the block
+	speed = 0.01, 			-- per frame. 1.0 = tile size
+	board = nil, 			-- board structure "pointer"
+	points = 0, 			-- points gathered by the given beetle
 }
 
 function beetle:new(o) 
